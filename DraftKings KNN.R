@@ -11,6 +11,7 @@ train$SalaryScaled <- train$Salary/mean(train$Salary)
 # Create empty "fitted_value" and "error_value" vectors.
 fitted_value <- NULL
 error_value <- NULL
+
 # Start a for loop that will be used to evaluate every k-value. Can be modified if the dataset is too large for this function to run quickly (e.g., take every 2nd value)
 for (j in (1:nrow(train)-1)){
   # Set squaredError to 0, so we can aggregate the total for each k-value.
@@ -35,18 +36,22 @@ for (j in (1:nrow(train)-1)){
     # Take the root mean squared error between our prediction and our validation point.
     squaredError <- squaredError + (fitted_value[i] - validation$Actual)^2
   }
-  # Calculate the total error for one k value. This will iterate until all of the k values are tried.
+  
+# Calculate the total error for one k value. This will iterate until all of the k values are tried.
 error_value[j] <- sqrt(squaredError/nrow(train))
 }
 # Return the value of k with the lowest root mean squared error.
 idealK <- which.min(error_value)
-# The below code is the section where we actually use our model to predict on new data.First we bring in our testing data.
+
+# The below code is the section where we actually use our model to predict on new data. First we bring in our testing data.
+
 test <- fread("Test.csv")
 # Scale the testing data similarly to how we scaled the training data above.
 test$ProjectionScaled <- test$Projection/mean(train$Projection)
 test$SalaryScaled <- test$Salary/mean(train$Salary)
 # Create an empty vector so we can append our projections.
 fitted_value <- NULL
+
 # For loop to predict for all values within our testing set.
 for (i in 1:nrow(test)){
   # Set our testing value to be the ith row of our testing data
@@ -62,6 +67,7 @@ for (i in 1:nrow(test)){
   # Set our projection for the ith value of the testing set.
   fitted_value[i] <- mean(training$Actual)
 }
+
 # Append all of our predictions to our original dataset.
 test$Pred <- fitted_value
 # Write the final dataset as a csv file.
